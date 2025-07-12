@@ -1,4 +1,24 @@
+from IPython.display import display
+import ipywidgets as widgets
+import os
 import sys
+
+# Dropdown for maze selection
+maze_selector = widgets.Dropdown(
+    options=['maze1.txt', 'maze2.txt', 'maze3.txt'],
+    value='maze1.txt',
+    description='Maze:',
+)
+display(maze_selector)
+
+# Download the selected maze from GitHub
+def download_maze(filename):
+    url = f"https://raw.githubusercontent.com/mhage82/ai-experiments/main/search/{filename}"
+    print(f"Downloading {filename}...")
+    os.system(f"wget -q {url} -O selected_maze.txt")
+
+download_maze(maze_selector.value)
+
 
 class Node():
     def __init__(self, state, parent, action):
@@ -208,17 +228,15 @@ class Maze():
                 # Draw cell
                 draw.rectangle(
                     ([(j * cell_size + cell_border, i * cell_size + cell_border),
-                      ((j + 1) * cell_size - cell_border, (i + 1) * cell_size - cell_border)]),
+                     ((j + 1) * cell_size - cell_border, (i + 1) * cell_size - cell_border)]),
                     fill=fill
                 )
 
         img.save(filename)
 
 
-if len(sys.argv) != 2:
-    sys.exit("Usage: python maze.py maze.txt")
-
-m = Maze(sys.argv[1])
+# Main logic
+m = Maze("selected_maze.txt")
 print("Maze:")
 m.print()
 print("Solving...")
